@@ -20,7 +20,7 @@ for name, code in schemes.items():
 
     nav_df = pd.DataFrame(data["data"])
 
-    output_file = Path(f"Data/Raw/{name}_nav.csv")
+    output_file = Path(f"data/raw/{name}_nav.csv")
 
     nav_df.to_csv(output_file, index=False)
 

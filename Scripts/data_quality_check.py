@@ -1,7 +1,7 @@
 import pandas as pd
 
-fund_master = pd.read_csv("Data/Raw/01_fund_master.csv")
-nav_history = pd.read_csv("Data/Raw/02_nav_history.csv")
+fund_master = pd.read_csv("data/raw/01_fund_master.csv")
+nav_history = pd.read_csv("data/raw/02_nav_history.csv")
 
 print("Fund Master Shape:", fund_master.shape)
 print("NAV History Shape:", nav_history.shape)

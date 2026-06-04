@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
 
-raw_path = Path("Data/Raw")
+raw_path = Path("data/raw")
 
 csv_files = list(raw_path.glob("*.csv"))
 
