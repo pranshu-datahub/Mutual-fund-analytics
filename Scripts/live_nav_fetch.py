@@ -7,7 +7,8 @@ schemes = {
     "ICICI_Bluechip": 120503,
     "Nippon_LargeCap": 118632,
     "Axis_Bluechip": 119092,
-    "Kotak_Bluechip": 120841
+    "Kotak_Bluechip": 120841,
+    "hdfc_top100_live": 125497
 }
 
 for name, code in schemes.items():

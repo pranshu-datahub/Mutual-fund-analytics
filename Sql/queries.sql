@@ -1,45 +1,61 @@
--- Top 5 Funds by AUM
-SELECT * FROM fact_aum ORDER BY aum_crore DESC LIMIT 5;
+-- 1. Top 5 funds by latest AUM
+SELECT fund_house, aum_crore
+FROM fact_aum
+WHERE report_date = (
+    SELECT MAX(report_date) FROM fact_aum
+)
+ORDER BY aum_crore DESC
+LIMIT 5;
 
--- Average NAV
-SELECT AVG(nav) FROM fact_nav;
-
--- Monthly NAV
-SELECT substr(date,1,7), AVG(nav)
+-- 2. Average NAV per month
+SELECT substr(date, 1, 7) AS month, AVG(nav) AS avg_nav
 FROM fact_nav
-GROUP BY substr(date,1,7);
+GROUP BY month
+ORDER BY month;
 
--- State-wise Transactions
-SELECT state, COUNT(*)
+-- 3. SIP YoY growth count
+SELECT substr(transaction_date, 1, 4) AS year,
+       SUM(CASE WHEN transaction_type = 'SIP' THEN 1 ELSE 0 END) AS sip_count
 FROM fact_transactions
-GROUP BY state;
+GROUP BY year
+ORDER BY year;
 
--- Expense Ratio < 1
-SELECT expense_ratio_pct
+-- 4. Transactions by state
+SELECT state, COUNT(*) AS txn_count
+FROM fact_transactions
+GROUP BY state
+ORDER BY txn_count DESC
+LIMIT 10;
+
+-- 5. Funds with expense_ratio between 0.1 and 2.5
+SELECT amfi_code, expense_ratio_pct
 FROM fact_performance
-WHERE expense_ratio_pct < 1;
+WHERE expense_ratio_pct BETWEEN 0.1 AND 2.5
+ORDER BY expense_ratio_pct;
 
--- Transaction Type Count
-SELECT transaction_type, COUNT(*)
+-- 6. Transaction type distribution
+SELECT transaction_type, COUNT(*) AS count
 FROM fact_transactions
 GROUP BY transaction_type;
 
--- Gender Distribution
-SELECT gender, COUNT(*)
+-- 7. Gender distribution in transactions
+SELECT gender, COUNT(*) AS count
 FROM fact_transactions
 GROUP BY gender;
 
--- City Tier Distribution
-SELECT city_tier, COUNT(*)
+-- 8. City tier distribution
+SELECT city_tier, COUNT(*) AS count
 FROM fact_transactions
 GROUP BY city_tier;
 
--- Risk Grade Distribution
-SELECT risk_grade, COUNT(*)
-FROM fact_performance
-GROUP BY risk_grade;
-
--- Fund Category Count
-SELECT category, COUNT(*)
+-- 9. Fund category count
+SELECT category, COUNT(*) AS fund_count
 FROM dim_fund
 GROUP BY category;
+
+-- 10. Top 5 funds by 1-year return
+SELECT f.scheme_name, p.return_1yr_pct
+FROM fact_performance p
+JOIN dim_fund f ON p.amfi_code = f.amfi_code
+ORDER BY p.return_1yr_pct DESC
+LIMIT 5;
